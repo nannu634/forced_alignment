@@ -1,0 +1,122 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+ 
+xmin = 0 
+xmax = 27 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]: 
+        class = "IntervalTier" 
+        name = "phoneme" 
+        xmin = 0 
+        xmax = 27 
+        intervals: size = 27 
+        intervals [1]:
+            xmin = 0 
+            xmax = 1 
+            text = "﻿ਮੀਂਹ, ਮੀਂਹ" 
+        intervals [2]:
+            xmin = 1 
+            xmax = 2 
+            text = "ਸੰਜੀਵ ਜੈਸਵਾਲ ਦੁਆਰਾ" 
+        intervals [3]:
+            xmin = 2 
+            xmax = 3 
+            text = "ਇੱਕ ਬੱਦਲ ਅਸਮਾਨ ਵਿੱਚ" 
+        intervals [4]:
+            xmin = 3 
+            xmax = 4 
+            text = "ਪ੍ਰਸੰਨਤਾ ਨਾਲ ਘੁੰਮਿਆ।" 
+        intervals [5]:
+            xmin = 4 
+            xmax = 5 
+            text = "ਮੋਰ ਨੇ ਕਿਹਾ," 
+        intervals [6]:
+            xmin = 5 
+            xmax = 6 
+            text = "ਤੁਸੀਂ ਮੀਂਹ ਕਿਉਂ ਨਹੀਂ ਪਾਉਂਦੇ?" 
+        intervals [7]:
+            xmin = 6 
+            xmax = 7 
+            text = "ਮੈਂ ਤੁਹਾਡੇ ਲਈ ਨੱਚਾਂਗਾ।”" 
+        intervals [8]:
+            xmin = 7 
+            xmax = 8 
+            text = "ਮੱਛੀ ਨੇ ਕਿਹਾ, “ਕਿਰਪਾ ਕਰਕੇ ਮੀਂਹ ਪਾਓ।" 
+        intervals [9]:
+            xmin = 8 
+            xmax = 9 
+            text = "ਮੈਨੂੰ ਹੋਰ ਪਾਣੀ ਚਾਹੀਦਾ ਹੈ।”" 
+        intervals [10]:
+            xmin = 9 
+            xmax = 10 
+            text = "ਕਿਸਾਨ ਨੇ ਕਿਹਾ, “ਕਿਰਪਾ ਕਰਕੇ ਮੀਂਹ ਪਾਓ।" 
+        intervals [11]:
+            xmin = 10 
+            xmax = 11 
+            text = "ਮੈਂ ਅਗਲੀ ਫ਼ਸਲ ਲਈ ਬੀਜ ਬੀਜਾਂਗਾ।”" 
+        intervals [12]:
+            xmin = 11 
+            xmax = 12 
+            text = "ਰਾਜੂ ਨੇ ਕਿਹਾ, “ਜੇਕਰ ਤੁਸੀਂ ਮੀਂਹ ਪਾਉਂਦੇ ਹੋ," 
+        intervals [13]:
+            xmin = 12 
+            xmax = 13 
+            text = "ਮੈਂ ਕਾਗ਼ਜ਼ ਦੀਆਂ ਕਿਸ਼ਤੀਆਂ ਚਲਾਵਾਂਗਾ।”" 
+        intervals [14]:
+            xmin = 13 
+            xmax = 14 
+            text = "ਬੱਦਲ ਚਮਕਦੀਆਂ ਬੂੰਦਾਂ ਦੇ ਮੀਂਹ ਵਿੱਚ ਵਰ੍ਹਿਆ।" 
+        intervals [15]:
+            xmin = 14 
+            xmax = 15 
+            text = "ਮੋਰ ਨੇ ਆਪਣੇ ਖ਼ੂਬਸੂਰਤ ਖੰਭ ਫੈਲਾਏ" 
+        intervals [16]:
+            xmin = 15 
+            xmax = 16 
+            text = "ਅਤੇ ਨੱਚਿਆ।" 
+        intervals [17]:
+            xmin = 16 
+            xmax = 17 
+            text = "ਤਲਾਅ ਭਰ ਗਿਆ।" 
+        intervals [18]:
+            xmin = 17 
+            xmax = 18 
+            text = "ਮੱਛੀ ਖ਼ੁਸ਼ ਸੀ।" 
+        intervals [19]:
+            xmin = 18 
+            xmax = 19 
+            text = "ਕਿਸਾਨ ਨੇ ਬੀਜ ਬੀਜਣੇ ਸ਼ੁਰੂ ਕਰ ਦਿੱਤੇ।" 
+        intervals [20]:
+            xmin = 19 
+            xmax = 20 
+            text = "ਛਪਾਕ! ਛਪਾਕ! ਛਪਾਕ!" 
+        intervals [21]:
+            xmin = 20 
+            xmax = 21 
+            text = "ਰਾਜੂ ਅਤੇ ਉਸਦੇ ਦੋਸਤਾਂ ਨੇ" 
+        intervals [22]:
+            xmin = 21 
+            xmax = 22 
+            text = "ਛੱਪੜਾਂ ਵਿੱਚ ਇੱਕ ਸ਼ਾਨਦਾਰ ਸਮਾਂ ਬਤੀਤ ਕੀਤਾ।" 
+        intervals [23]:
+            xmin = 22 
+            xmax = 23 
+            text = "ਬੱਦਲ ਨੇ ਹਰ ਇੱਕ ਦਾ ਦਿਲ" 
+        intervals [24]:
+            xmin = 23 
+            xmax = 24 
+            text = "ਖੁਸ਼ੀ ਨਾਲ ਭਰ ਦਿੱਤਾ।" 
+        intervals [25]:
+            xmin = 24 
+            xmax = 25 
+            text = "ਇਹ ਅੱਗੇ ਵਧ ਗਿਆ।" 
+        intervals [26]:
+            xmin = 25 
+            xmax = 26 
+            text = "ਸਾਰੇ ਬੱਚਿਆਂ ਨੇ" 
+        intervals [27]:
+            xmin = 26 
+            xmax = 27 
+            text = "ਅਲਵਿਦਾ ਲਈ ਹੱਥ ਹਿਲਾਇਆ।" 
