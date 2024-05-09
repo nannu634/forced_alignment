@@ -7,23 +7,25 @@ from pydub import AudioSegment
 import wave
 from moviepy.editor import VideoFileClip
 from moviepy.editor import AudioFileClip
-from forced_alignment.texttolab import convert_txt_to_lab
-from forced_alignment.texttotime import convert_textgrid_to_srt
-from forced_alignment.docxtolab import convert_docx_to_lab
-from forced_alignment.convert_label import read_lab, SegmentationLabel, Segment
+from texttolab import convert_txt_to_lab
+from texttotime import convert_textgrid_to_srt
+from docxtolab import convert_docx_to_lab
 import os
 import time
+import subprocess
 
 #app = Flask(__name__)
 app = Flask(__name__, template_folder='templates')
 
 UPLOAD_FOLDER = 'uploads'
 OUTPUT_FOLDER = 'output'
+INPUT_FOLDER = 'input_file'
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['OUTPUT_FOLDER'] = OUTPUT_FOLDER
+app.config['INPUT_FOLDER'] = INPUT_FOLDER
 
-def convert_mp3_to_wav(audio_path, output_path):
+def convert_mp3_to_wav(audio_path, wav_output_path):
     try:
         audio = AudioFileClip(audio_path)
         
@@ -37,14 +39,14 @@ def convert_mp3_to_wav(audio_path, output_path):
             audio.write_audiofile(temp_audio_filename)
 
             audio_filename = os.path.splitext(os.path.basename(audio_path))[0]
-            output_file_path = os.path.join(output_path, f"{audio_filename}.wav")
+            #output_file_path = os.path.join(wav_output_path, "output.wav")
 
             audio.close()
             temp_audio_file.close()
-            shutil.move(temp_audio_filename, output_file_path)
+            shutil.move(temp_audio_filename, wav_output_path)
 
-            print(f"Audio processed. Output path: {output_file_path}")
-            return output_file_path
+            print(f"Audio processed. Output path: {wav_output_path}")
+            return wav_output_path
         finally:
             audio.close()
             shutil.rmtree(temp_dir)
@@ -52,7 +54,7 @@ def convert_mp3_to_wav(audio_path, output_path):
         print(f"Error during audio processing: {str(e)}")
     
 
-def process_video(video_path, output_path):
+def process_video(video_path, wav_output_path):
     try:
         video = VideoFileClip(video_path)
         audio = video.audio
@@ -66,30 +68,49 @@ def process_video(video_path, output_path):
             audio.write_audiofile(temp_audio_filename)
 
             video_filename = os.path.splitext(os.path.basename(video_path))[0]
-            output_file_path = os.path.join(output_path, f"{video_filename}.wav")
+            #output_file_path = os.path.join(wav_output_path, "output.wav")
 
             audio.close()
             temp_audio_file.close()
-            shutil.move(temp_audio_filename, output_file_path)
+            shutil.move(temp_audio_filename, wav_output_path)
 
-            print(f"Video processed. Output path: {output_file_path}")
-            return output_file_path
+            print(f"Video processed. Output path: {wav_output_path}")
+            return wav_output_path
         finally:
             video.close()
             shutil.rmtree(temp_dir)
     except Exception as e:
         print(f"Error during video processing: {str(e)}")
 
-def generate_textgrid(input_lab_file, output_textgrid_file, chooses_mora=False):
-    # Read the label file
-    label = read_lab(input_lab_file)
+def run_mfa(acoustic_directory, acoustic_model_path, dictionary_path, output_directory):
+    try:
+        # Replace the placeholders with the correct paths
+        conda_activate_script = r"C:\\Users\\DELL\\miniconda3\\Scripts\\activate.bat"
+        mfa_env_name = "aligner"
 
-    # Optionally convert to moras
-    if chooses_mora:
-        label = label.by_moras()
+        # Activate the conda environment
+        activate_command = f'call "{conda_activate_script}" {mfa_env_name} && '
 
-    # Generate and save the TextGrid file
-    label.to_textgrid(output_textgrid_file)
+        # Construct the MFA command
+        mfa_command = [
+            'mfa',
+            'align',
+            acoustic_directory,
+            acoustic_model_path,
+            dictionary_path,
+            output_directory,
+            '--single_speaker'
+        ]
+
+        # Combine the activate command and MFA command
+        full_command = activate_command + " ".join(mfa_command)
+
+        # Run MFA as a subprocess
+        subprocess.run(full_command, check=True, shell=True)
+        print("MFA process completed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error running MFA: {e}")
+
 
 @app.route('/')
 def index():
@@ -98,6 +119,7 @@ def index():
 @app.route('/align', methods=['POST'])
 def align():
     output_path = app.config['OUTPUT_FOLDER']
+    input_path = app.config['INPUT_FOLDER']
 
     try:
         if 'videoFile' not in request.files or 'scriptFile' not in request.files:
@@ -119,9 +141,11 @@ def align():
         print(f"Script Path: {script_path}")
 
         if video_file.filename.lower().endswith('.mp3'):
-            convert_mp3_to_wav(video_path, output_path)
+            wav_output_path = os.path.join(output_path, 'output.wav')
+            convert_mp3_to_wav(video_path, wav_output_path)
         else:
-            process_video(video_path, output_path)
+            wav_output_path = os.path.join(output_path, 'output.wav')
+            process_video(video_path, wav_output_path)
         
         if script_file.filename.lower().endswith('.txt'):
             script_output_path = os.path.join(output_path, 'output.lab')
@@ -130,31 +154,14 @@ def align():
             script_output_path = os.path.join(output_path, 'output.lab') 
             convert_docx_to_lab(script_path, script_output_path)
 
-        if video_file.filename.lower().endswith('.mp3'):
-            wav_file_path = os.path.join(output_path, 'output.wav')
-            time.sleep(1)  # Introduce a delay after converting MP3 to WAV
-        else:
-            wav_file_path = os.path.join(output_path, f"{os.path.splitext(os.path.basename(video_path))[0]}.wav")
-
-        print(f"WAV File Path: {wav_file_path}")
-
+        print(f"WAV File Path: {wav_output_path}")
         
-        chooses_mora = False
-        textgrid_output_path = os.path.join(output_path, 'output.textgrid')
-        generate_textgrid(script_output_path, textgrid_output_path, chooses_mora)
-
-        '''textGrid_output_path = os.path.join(output_path, 'output.TextGrid')
-
-        segmentation_label = read_lab(script_output_path)
-
-        if segmentation_label:
-        # Generate the TextGrid
-          segmentation_label.to_textgrid(textGrid_output_path)
-          print(f"TextGrid saved to {textGrid_output_path}")'''
-
+        run_mfa('C:\\Users\\DELL\\OneDrive\\Desktop\\TimeCode_Generation_Project\\output', 'tamil_cv', 'tamil_cv', 'C:\\Users\\DELL\\OneDrive\\Desktop\\TimeCode_Generation_Project\\input_file')
+        
+        textGrid_output_path = os.path.join(input_path, 'output.TextGrid')
+        #srt_output_path = os.path.join(output_path, 'output.srt')
+        convert_textgrid_to_srt(textGrid_output_path, output_path)
         srt_output_path = os.path.join(output_path, 'output.srt')
-        convert_textgrid_to_srt(textgrid_output_path, output_path, interval_length=1)
-
         print(f"SRT Output Path: {srt_output_path}")
 
         response = send_file(srt_output_path, as_attachment=True)
@@ -165,31 +172,8 @@ def align():
     except Exception as e:
         print(f"Error during alignment: {str(e)}")
         return render_template('index.html', error=f'Error during alignment: {str(e)}')
-    
-def generate_preview_srt(srt_content, preview_lines=5):
-    # Add logic to read the content of the original SRT file and generate the preview
-    # For example, you can use the following code assuming srt_content is the file path:
-    with open(srt_content, 'r', encoding='utf-8') as file:
-        original_srt_content = file.read()
-
-    # Your logic to generate the preview goes here
-    preview_content = "\n".join(original_srt_content.splitlines()[:preview_lines])
-
-    return preview_content
-
-@app.route('/Preview', methods=['POST'])
-def preview():
-    output_path = app.config['OUTPUT_FOLDER']
-    srt_content_path = os.path.join(output_path, 'output.srt')
-
-    # Generate the preview content
-    preview_content = generate_preview_srt(srt_content_path, preview_lines=5)
-
-    # Render the preview content (you might want to create a specific template for this)
-    return render_template('preview_template.html', preview_content=preview_content)
-
 
 if __name__ == '__main__':
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok=True)
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
